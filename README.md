@@ -2,7 +2,7 @@
 
 | CRUD Action | RESTful Action | HTTP Method | Definition |
 | ----------- | -------------- | ----------- | ------------------------ |
-| Create | `new` | `GET` | Show a form to create a new item |
+|  | `new` | `GET` | Show a form to create a new item |
 | Create | `create` | `POST` | Add a new item to the database |
 | Read | `index` | `GET` | Show all items |
 | Read | `show` | `GET` | Show one specific item |
