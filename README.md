@@ -30,11 +30,19 @@ app.listen(3000, function(){
 })
 ```
 
+
 Run the server with `nodemon server.js`
 <img width="751" height="181" alt="Screenshot 2026-07-05 at 11 22 36 AM" src="https://github.com/user-attachments/assets/5d613f26-670f-47ce-9d54-455cdbe3b6b7" />
+
 
 Navigate to `http://localhost:3000` to view our server.
 
 Use `ctrl + c` to stop the server in the terminal.
 
+### creating a test Route
 
+```js
+app.get('/test',function(req,res){
+    res.send("<h1>TEXT</h1>")
+})
+```
