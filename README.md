@@ -51,12 +51,11 @@ Navigate to `http://localhost:3000/test`
 ### Using request parameters
 
 ```js
-app.get('/:userId', function(req, res){
-    res.send(`Hello user number:${req.params.userId}`)
-    console.log(req.params.userId)
+app.get('/:id', function(req,res){
+  res.send(`Hello user number: ${req.params.id}`)
+    console.log(req.params.id)
 })
 ```
-Navigate to `http://localhost:3000/2490`
+Navigate to `http://localhost:3000` to view our server.
 
-<img width="532" height="179" alt="Screenshot 2026-07-05 at 2 12 17 PM" src="https://github.com/user-attachments/assets/4a428ac3-5fdd-4917-ab90-38e9cd39fad3" />
-
+<img width="364" height="169" alt="image" src="https://github.com/user-attachments/assets/a1871126-1513-4743-b178-52e779b49384" />
