@@ -1,4 +1,3 @@
-<img width="619" height="344" alt="Screenshot 2026-07-06 at 2 58 48 PM" src="https://github.com/user-attachments/assets/69ccb3dc-230f-4dc5-bbda-07b02ccf3c19" />
 # MEN STACK NOTES
 
 | CRUD Action | RESTful Action | HTTP Method | Definition |
