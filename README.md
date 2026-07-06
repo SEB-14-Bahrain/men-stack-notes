@@ -1,3 +1,4 @@
+<img width="619" height="344" alt="Screenshot 2026-07-06 at 2 58 48 PM" src="https://github.com/user-attachments/assets/69ccb3dc-230f-4dc5-bbda-07b02ccf3c19" />
 # MEN STACK NOTES
 
 | CRUD Action | RESTful Action | HTTP Method | Definition |
@@ -139,4 +140,5 @@ home.ejs
     <% }) %>
 </ul>
 ```
+<img width="597" height="313" alt="Screenshot 2026-07-06 at 2 59 14 PM" src="https://github.com/user-attachments/assets/9b8c861c-680d-456b-98fd-b5a0522a9af1" />
 
