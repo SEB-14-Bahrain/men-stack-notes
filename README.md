@@ -72,3 +72,34 @@ Navigate to `http://localhost:3000/2490`
 
 <img width="532" height="179" alt="Screenshot 2026-07-05 at 2 12 17 PM" src="https://github.com/user-attachments/assets/4a428ac3-5fdd-4917-ab90-38e9cd39fad3" />
 
+## Rendering EJS
+
+- install ejs with `npm i ejs`
+- create a `views` directory
+- create an `.ejs` file like `home.ejs`
+- add html boilerplate with `!`
+
+home.ejs
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>This is an ejs page! 🚀</h1>
+</body>
+</html>
+```
+
+- render `ejs` page using a controller like this one:
+
+```js
+app.get('/', function(req, res){
+    res.render('home.ejs')
+})
+```
+<img width="632" height="311" alt="Screenshot 2026-07-06 at 12 39 56 PM" src="https://github.com/user-attachments/assets/be240674-1cf5-4b60-abe7-2c3799f72296" />
+
