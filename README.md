@@ -141,3 +141,10 @@ home.ejs
 ```
 <img width="597" height="313" alt="Screenshot 2026-07-06 at 2 59 14 PM" src="https://github.com/user-attachments/assets/9b8c861c-680d-456b-98fd-b5a0522a9af1" />
 
+### Creating dynamic links to a `show` page
+
+`item.name` is dynamically showing up.  The link is also dynamically changing with the item. (see `forEach` above)
+```ejs
+<a href="/<%= item.id %>"> <%= item.name %> </a>
+```
+We should see the URL change in the browser.
