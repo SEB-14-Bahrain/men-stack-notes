@@ -360,6 +360,12 @@ Visit:
 http://localhost:3000/fruits/new
 ```
 
+The same form without and with CSS:
+
+<img width="300" height="260" alt="Screenshot 2026-07-11 at 10 42 44 AM" src="https://github.com/user-attachments/assets/287c4471-26f0-4f05-b7ef-a43b677bdf78" />
+<img width="304" height="260" alt="Screenshot 2026-07-11 at 10 39 33 AM" src="https://github.com/user-attachments/assets/fdd6558c-b038-4b47-a4d1-1d6e20969f96" />
+
+
 ### Create a Fruit from the Form
 
 Create the `POST /fruits` route:
