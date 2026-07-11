@@ -12,6 +12,51 @@
 | GET | /fruits/:fruitId/edit | View a form for editing a fruit (restrict to user who submitted the fruit) |
 | PUT | /fruits/:fruitId|  Handle the edit fruit form being submitted (restrict to user who submitted the fruit) |
 
+## The Create Request Cycle
+
+When the user creates a fruit, the request follows these steps:
+
+```plaintext
+GET /fruits/new
+        ↓
+Express renders new.ejs
+        ↓
+The user completes the form
+        ↓
+The form sends POST /fruits
+        ↓
+express.urlencoded() creates req.body
+        ↓
+The controller converts the checkbox value
+        ↓
+Fruit.create(req.body) saves the document
+        ↓
+Express redirects to /fruits/new
+```
+## Current Project Structure
+
+At this point, the application should will a structure like this:
+
+```plaintext
+men-stack-crud-app-fruits/
+├── models/
+│   └── fruit.js
+├── public/
+│   ├── images/
+│   └── stylesheets/
+│       └── style.css
+├── views/
+│   ├── partials/
+│   │   └── nav.ejs
+│   ├── new.ejs
+│   └── home.ejs
+├── .env
+├── .gitignore
+├── package-lock.json
+├── package.json
+└── server.js
+```
+
 
 ## SETUP
 
@@ -548,34 +593,6 @@ app.post('/fruits', async (req, res) => {
 We use `await` so the application waits for MongoDB to finish creating the document before redirecting the user.
 
 
-## The Create Request Cycle
-
-When the user creates a fruit, the request follows these steps:
-
-```plaintext
-GET /fruits/new
-        ↓
-Express renders new.ejs
-        ↓
-The user completes the form
-        ↓
-The form sends POST /fruits
-        ↓
-express.urlencoded() creates req.body
-        ↓
-The controller converts the checkbox value
-        ↓
-Fruit.create(req.body) saves the document
-        ↓
-Express redirects to /fruits/new
-```
-
-This is our first complete CRUD operation:
-
-```plaintext
-Create → POST /fruits → Fruit.create()
-```
-
 ## Verify the Fruit in MongoDB Atlas
 
 After submitting the form:
@@ -602,28 +619,5 @@ MongoDB automatically adds `_id`.
 Mongoose automatically adds `__v`.
 
 
-## Current Project Structure
-
-At this point, the application should have a structure similar to:
-
-```plaintext
-men-stack-crud-app-fruits/
-├── models/
-│   └── fruit.js
-├── public/
-│   ├── images/
-│   └── stylesheets/
-│       └── style.css
-├── views/
-│   ├── partials/
-│   │   └── nav.ejs
-│   ├── new.ejs
-│   └── home.ejs
-├── .env
-├── .gitignore
-├── package-lock.json
-├── package.json
-└── server.js
-```
 
 
