@@ -250,7 +250,7 @@ Include the `nav` in other files with this statement:
 - Create an `images` folder inside of our `public` folder
 - Link to images like normal: `<img src="/images/family.jpg" alt="A happy family">`
 
-## Adding MongoDB and Mongoose
+## 🥭 Adding MongoDB and Mongoose
 
 ### Connect to MongoDB
 
