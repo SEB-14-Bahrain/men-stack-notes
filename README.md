@@ -302,9 +302,13 @@ const Fruit = mongoose.model('Fruit', fruitSchema)
 module.exports = Fruit
 ```
 
-Import the model into `server.js`:
+Import the model into `server.js` _after_ your MongoDB Connection string:
 
 ```js
+    console.log(`Connected to MongoDB ${mongoose.connection.name} 🥭`)
+})
+
+// import Fruit model here
 const Fruit = require('./models/fruit.js')
 ```
 
