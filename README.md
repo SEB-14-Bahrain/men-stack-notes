@@ -61,10 +61,10 @@ men-stack-crud-app-fruits/
 ## SETUP
 
 - create a directory
-- create server file `touch server.js`
-- create a `.gitignore` file
+- create our first files `touch server.js .gitignore .env`
 - initialize a node project with `npm init -y`
-- install express and morgan `npm i express morgan`
+- install applications `npm i express morgan ejs mongoose dotenv`
+- open our project with `code .`
 
 ### Add `node_modules` to `.gitignore`
 
@@ -74,15 +74,26 @@ node_modules
 .env
 ```
 
+### Add the MongoDB connection string to `.env`:
+
+```plaintext
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/fruits?retryWrites=true&w=majority
+```
+_Remember to change your database name in the connection string_
+
+
 ### Write Server Boilerplate
 
 server.js
 ```js
 const express = require('express')
 const morgan = require('morgan')
+const path = require('path')
 
 const app = express()
 
+app.use(express.static(path.join(__dirname, "public"))) // use static middleware with other middlware like morgan
+app.use(express.urlencoded({ extended: false })) // need this for reading form data
 app.use(morgan('dev'))
 
 app.listen(3000, function(){
@@ -122,7 +133,6 @@ Navigate to `http://localhost:3000/2490`
 
 ## Rendering EJS
 
-- install ejs with `npm i ejs`
 - create a `views` directory
 - create an `.ejs` file like `home.ejs`
 - add html boilerplate with `!`
@@ -230,15 +240,6 @@ Include the `nav` in other files with this statement:
 - Create a folder called `stylesheets` inside of `public`
 - Create a file called `style.css` inside of `stylesheets`
 
-Configure our server to look inside of the `public` folder for static files:
-```js
-// require the path from node at the top
-const path = require('path')
-
-// use static middleware with other middlware like morgan
-app.use(express.static(path.join(__dirname, "public")))
-```
-
 - Link the stylesheet in the head of our `html` files (inside `nav` partial if we're using partials)
 ```ejs
 <link rel="stylesheet" href="/stylesheets/style.css">
@@ -251,114 +252,41 @@ app.use(express.static(path.join(__dirname, "public")))
 
 ## Adding MongoDB and Mongoose
 
-Our application can currently display pages, but it cannot permanently store information.
+### Connect to MongoDB
 
-We will use:
-
-* **MongoDB Atlas** to host our database
-* **Mongoose** to communicate with MongoDB
-* **dotenv** to protect our database connection string
-
-### Install Mongoose and dotenv
-
-Stop the server with `Ctrl + C`, then install the packages:
-
-```bash
-npm i mongoose dotenv
-```
-
-## Protecting Environment Variables
-
-Create a `.env` file in the root of the project:
-
-```bash
-touch .env
-```
-
-The `.env` file will hold information that should not be uploaded to GitHub.
-
-Add `.env` and `node_modules` to `.gitignore`:
-
-```plaintext
-node_modules
-.env
-```
-
-> 🚨 Never commit your `.env` file to GitHub. It contains private database credentials.
-
-### Add the MongoDB connection string
-
-Add the MongoDB Atlas connection string to `.env`:
-
-```plaintext
-MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/fruits?retryWrites=true&w=majority
-```
-
-There should be no spaces around the `=` sign.
-
-The `/fruits?` part names the database for this application.
-
-## Connecting the Server to MongoDB
-
-Load `dotenv` at the top of `server.js`:
+At the top of `server.js`, load `dotenv` and Mongoose:
 
 ```js
-const dotenv = require('dotenv').config() // making .env file available
-```
-
-This reads the variables from `.env` and adds them to `process.env`.
-
-Import Mongoose:
-
-```js
+const dotenv = require('dotenv').config()
 const mongoose = require('mongoose')
 ```
 
-Connect Mongoose to MongoDB and add a connection event listener so we know when the connection works:
+Connect to MongoDB:
 
 ```js
-// connect us to MongoDB using connection string in .env
 mongoose.connect(process.env.MONGODB_URI)
+
 mongoose.connection.on('connected', () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name} 🥭`)
 })
 ```
+<img width="553" height="96" alt="Screenshot 2026-07-11 at 10 12 22 AM" src="https://github.com/user-attachments/assets/92af3e8a-4d56-460a-ade8-7e76226cf139" />
 
-Run the server:
 
-```bash
-nodemon server.js
-```
+## Creating a Fruit in the Database
 
-We should see messages similar to:
+### Create a Fruit model
 
-```plaintext
-Connected to MongoDB fruits
-Listening on port 3000 💛
-```
-
-## Creating a Mongoose Model
-
-A **model** represents one type of data in our application.
-
-Our application will have a `Fruit` model.
-
-Create a `models` directory and a `fruit.js` file:
+Create a `models` folder and a `fruit.js` file:
 
 ```bash
 mkdir models
 touch models/fruit.js
 ```
 
-Model filenames should normally be singular not plural.
-
-### Create the Fruit schema
-
-The completed model should look like this:
+Add the Fruit schema and model:
 
 ```js
-// models/fruit.js
-
 const mongoose = require('mongoose')
 
 const fruitSchema = new mongoose.Schema({
@@ -371,237 +299,128 @@ const Fruit = mongoose.model('Fruit', fruitSchema)
 module.exports = Fruit
 ```
 
-## Importing the Model
-
-Import the `Fruit` model into `server.js`:
+Import the model into `server.js`:
 
 ```js
 const Fruit = require('./models/fruit.js')
 ```
 
-The model gives our controllers access to Mongoose methods such as:
+### Create the New Fruit Form
 
-```js
-Fruit.create()
-Fruit.find()
-Fruit.findById()
-Fruit.findByIdAndUpdate()
-Fruit.findByIdAndDelete()
+Create `new.ejs` inside the `views` folder:
+
+```plaintext
+views/
+├── home.ejs
+└── new.ejs
 ```
 
-At this point, we are only using `Fruit.create()`.
+Add the form:
 
-## Creating the New Fruit Page
+```ejs
+<h1>Add a Fruit</h1>
 
-Creating a fruit requires two routes:
+<form action="/fruits" method="POST">
+    Fruit name:
+    <input type="text" name="name">
 
-| RESTful Action | HTTP Method | Route         | Responsibility                      |
-| -------------- | ----------- | ------------- | ----------------------------------- |
-| `new`          | `GET`       | `/fruits/new` | Display the form                    |
-| `create`       | `POST`      | `/fruits`     | Process the form and save the fruit |
+    Ready to eat?
+    <input type="checkbox" name="isReadyToEat">
 
-The `new` route does not save anything to the database. It only displays the form.
-
-### Create the view
-
-Create a `new.ejs` file inside `views`:
-
-```bash
-touch views/new.ejs
+    <button type="submit">Add Fruit</button>
+</form>
 ```
 
-### Create the new route
+The input `name` values become keys inside `req.body`.
 
-Add the route to `server.js`:
+For example:
 
 ```js
-// GET /fruits/new (displays form for creating fruit)
+req.body.name
+req.body.isReadyToEat
+```
+
+## Display the New Fruit Form
+
+Create the `new` route:
+
+```js
+// GET /fruits/new
 app.get('/fruits/new', async (req, res) => {
     res.render('new.ejs')
 })
 ```
 
-Navigate to:
+Visit:
 
 ```plaintext
 http://localhost:3000/fruits/new
 ```
 
----
+### Create a Fruit from the Form
 
-## Building the New Fruit Form
-
-Add the form to `views/new.ejs`:
-
-```ejs
-<%- include('./partials/nav') %>
-
-    <h1>Create a New Fruit</h1>
-
-    <form action="/fruits" method="POST">
-        Name:
-        <input type="text" name="name" />
-
-        <br />
-        <div class="checkbox-div">
-            Ready to Eat?
-            <input type="checkbox" name="isReadyToEat"/>
-        </div>
-
-        <button type="submit">Add Fruit</button>
-    </form>
-</body>
-</html>
-```
-
-The form has two important attributes:
-
-```ejs
-<form action="/fruits" method="POST">
-```
-
-* `action="/fruits"` tells the browser where to send the data.
-* `method="POST"` tells the browser that we are creating new data.
-
-**The `name` attributes must match the keys in our Mongoose schema:**
-
-```ejs
-name="name"
-name="isReadyToEat"
-```
-
-These match:
-
-```js
-const fruitSchema = new mongoose.Schema({
-    name: String,
-    isReadyToEat: Boolean,
-})
-```
-
-> 💡 The input `name` is used as the property name inside `req.body`.
-
-
-## Reading Form Data with Middleware
-
-Express does not automatically read data sent by an HTML form.
-
-Add this middleware before the routes in `server.js`:
-
-```js
-app.use(express.urlencoded({ extended: false }))
-```
-
-This middleware:
-
-1. Reads the submitted form data.
-2. Converts the data into a JavaScript object.
-3. Places the object on `req.body`.
-
-For example, submitting the fruit form may create:
-
-```js
-{
-    name: 'Mango',
-    isReadyToEat: 'on'
-}
-```
-
-Without `express.urlencoded()`, `req.body` will be `undefined`.
-
-
-## Creating the Create Route
-
-Add the `POST /fruits` route below the `new` route:
+Create the `POST /fruits` route:
 
 ```js
 // POST /fruits
-app.post('/fruits', async function (req, res) {
-    console.log(req.body)
+app.post('/fruits', async (req, res) => {
+    const fruitData = {}
+
+    fruitData.name = req.body.name
+
+    // Converts the 'on' into true for our isReadToEat boolean on our model
+    if (req.body.isReadyToEat === 'on') {
+        fruitData.isReadyToEat = true
+    } else {
+        fruitData.isReadyToEat = false
+    }
+
+    const createdFruit = await Fruit.create(fruitData)
 
     res.redirect('/')
 })
 ```
 
-Submit the form and check the terminal.
+The route:
 
-We should see the submitted data:
+1. Receives the form data through `req.body`.
+2. Creates a new `fruitData` object.
+3. Converts the checkbox value into a boolean.
+4. Uses `Fruit.create()` to save the fruit.
+5. Redirects the user to the home page.
 
-```js
-{
-    name: 'Mango',
-    isReadyToEat: 'on'
-}
-```
+#### Why We Convert the Checkbox
 
-At this point, the route receives the form data, but it does not save it yet.
-
-## Preparing Checkbox Data
-
-HTML checkboxes do not automatically send boolean values.
-
-When checked, the checkbox sends:
+A checked HTML checkbox sends the string:
 
 ```js
 'on'
 ```
 
-When it is not checked, the property is missing from `req.body`.
+An unchecked checkbox does not send a value.
 
-Our Mongoose schema expects a boolean
+Our schema expects a boolean:
 
 ```js
 isReadyToEat: Boolean
 ```
 
-So we must convert the checkbox value with an `if` statement before moving on:
+We convert the checkbox value before adding it to the database:
 
 ```js
-// Convert the checkbox value before saving
-    if (req.body.isReadyToEat === 'on') {
-        fruitData.isReadyToEat = true
-    } else {
-        fruitData.isReadyToEat = false
-    }
+if (req.body.isReadyToEat === 'on') {
+    fruitData.isReadyToEat = true
+} else {
+    fruitData.isReadyToEat = false
+}
 ```
 
-## Saving a Fruit to MongoDB
-
-Use `Fruit.create()` to save the submitted data:
-
-```js
-// POST /fruits (creates fruit in database)
-app.post('/fruits', async (req, res) => {
-    const fruitData = {}
-    fruitData.name = req.body.name
-
-// Convert the checkbox value before saving
-    if (req.body.isReadyToEat === 'on') {
-        fruitData.isReadyToEat = true
-    } else {
-        fruitData.isReadyToEat = false
-    }
-
-    let createdFruit = await Fruit.create(fruitData)
-
-    res.redirect('/')
-})
-```
-
-`Fruit.create()` is asynchronous because the application must communicate with an external database.
-
-We use `await` so the application waits for MongoDB to finish creating the document before redirecting the user.
-
-
-## Verify the Fruit in MongoDB Atlas
-
-After submitting the form:
+### Check the Database
 
 1. Open MongoDB Atlas.
-2. Open the database deployment.
-3. Select **Browse Collections**.
-4. Open the `fruits` database.
-5. Open the `fruits` collection.
+2. Select **Browse Collections**.
+3. Open the `fruits_db` database.
+4. Open the `fruits` collection.
 
 We should see a document similar to:
 
@@ -614,9 +433,7 @@ We should see a document similar to:
 }
 ```
 
-MongoDB automatically adds `_id`.
-
-Mongoose automatically adds `__v`.
+MongoDB automatically adds `_id` and `__v`.
 
 
 
